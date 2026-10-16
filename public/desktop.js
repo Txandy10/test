@@ -19,12 +19,15 @@ function closeStartMenu() {
 // Window Management
 function openApp(id) {
     const win = document.getElementById(id);
-    win.classList.remove('hidden');
-    bringToFront(win);
+    if (win) {
+        win.classList.remove('hidden');
+        bringToFront(win);
+    }
 }
 
 function closeApp(id) {
-    document.getElementById(id).classList.add('hidden');
+    const win = document.getElementById(id);
+    if (win) win.classList.add('hidden');
 }
 
 function bringToFront(win) {
@@ -34,6 +37,7 @@ function bringToFront(win) {
 
 function toggleFullscreen(id) {
     const win = document.getElementById(id);
+    if (!win) return;
     if (win.dataset.fullscreen === "true") {
         win.style.width = win.dataset.prevWidth || "850px";
         win.style.height = win.dataset.prevHeight || "520px";
@@ -59,11 +63,12 @@ function setWallpaper(url) {
 // File System
 function getFiles() {
     const saved = localStorage.getItem('webos_files');
-    return saved ? JSON.parse(saved) : [{ name: 'welcome.txt', content: 'Hello from WebOS!' }];
+    return saved ? JSON.parse(saved) : [{ name: 'welcome.txt', content: 'Hello from WebOS Pro!' }];
 }
 
 function loadFiles() {
     const grid = document.getElementById('fileGrid');
+    if (!grid) return;
     const files = getFiles();
     grid.innerHTML = '';
     files.forEach((f) => {
@@ -108,19 +113,33 @@ function saveCurrentNote() {
 
 // Calculator
 let calcVal = "";
-function calcAppend(v) { calcVal += v; document.getElementById('calcDisplay').innerText = calcVal || "0"; }
-function calcClear() { calcVal = ""; document.getElementById('calcDisplay').innerText = "0"; }
-function calcCompute() { try { calcVal = eval(calcVal).toString(); document.getElementById('calcDisplay').innerText = calcVal; } catch(e) { calcVal = ""; } }
+function calcAppend(v) { 
+    calcVal += v; 
+    document.getElementById('calcDisplay').innerText = calcVal || "0"; 
+}
+function calcClear() { 
+    calcVal = ""; 
+    document.getElementById('calcDisplay').innerText = "0"; 
+}
+function calcCompute() { 
+    try { 
+        calcVal = eval(calcVal).toString(); 
+        document.getElementById('calcDisplay').innerText = calcVal; 
+    } catch(e) { 
+        document.getElementById('calcDisplay').innerText = "Error";
+        calcVal = ""; 
+    } 
+}
 
-// Browser Proxy Routing
+// Browser Proxy Routing (Updated to /api/proxy)
 function loadUrl(e) {
     e.preventDefault();
     const url = document.getElementById('urlInput').value;
-    document.getElementById('browserFrame').src = `/proxy?url=${encodeURIComponent(url)}`;
+    document.getElementById('browserFrame').src = `/api/proxy?url=${encodeURIComponent(url)}`;
 }
 function loadUrlBtn() {
     const url = document.getElementById('urlInput').value;
-    document.getElementById('browserFrame').src = `/proxy?url=${encodeURIComponent(url)}`;
+    document.getElementById('browserFrame').src = `/api/proxy?url=${encodeURIComponent(url)}`;
 }
 
 // Window Dragging
@@ -133,5 +152,14 @@ function startDrag(e, id) {
     document.addEventListener('mousemove', onDrag);
     document.addEventListener('mouseup', stopDrag);
 }
-function onDrag(e) { if (activeWin) { activeWin.style.left = (e.clientX - offX) + 'px'; activeWin.style.top = (e.clientY - offY) + 'px'; } }
-function stopDrag() { activeWin = null; document.removeEventListener('mousemove', onDrag); document.removeEventListener('mouseup', stopDrag); }
+function onDrag(e) { 
+    if (activeWin) { 
+        activeWin.style.left = (e.clientX - offX) + 'px'; 
+        activeWin.style.top = (e.clientY - offY) + 'px'; 
+    } 
+}
+function stopDrag() { 
+    activeWin = null; 
+    document.removeEventListener('mousemove', onDrag); 
+    document.removeEventListener('mouseup', stopDrag); 
+}
