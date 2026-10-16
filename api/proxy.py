@@ -24,7 +24,7 @@ class handler(BaseHTTPRequestHandler):
             parsed_target = urlparse(target_url)
             base_origin = f"{parsed_target.scheme}://{parsed_target.netloc}"
 
-            # Request with User-Agent and Referer to bypass hotlink blocks
+            # Request with User-Agent and Referer headers to bypass hotlink blocks
             req = urllib.request.Request(
                 target_url,
                 headers={
@@ -40,7 +40,7 @@ class handler(BaseHTTPRequestHandler):
                 if 'text/html' in content_type:
                     soup = BeautifulSoup(raw_content, 'html.parser')
                     
-                    # 1. Rewrite standard tags (a, img, link, script)
+                    # 1. Rewrite standard tags to point explicitly to /api/proxy?url=
                     for tag in soup.find_all(['a', 'img', 'link', 'script']):
                         attr = 'href' if tag.has_attr('href') else ('src' if tag.has_attr('src') else None)
                         if attr:
@@ -49,7 +49,7 @@ class handler(BaseHTTPRequestHandler):
                                 abs_url = urljoin(target_url, original_url)
                                 tag[attr] = f"/api/proxy?url={abs_url}"
 
-                    # 2. Rewrite lazy-loading attributes used by modern sites (data-src, data-original)
+                    # 2. Rewrite lazy-loading attributes (data-src, data-original, etc.)
                     for tag in soup.find_all(True):
                         for lazy_attr in ['data-src', 'data-original', 'data-lazy-src']:
                             if tag.has_attr(lazy_attr):
