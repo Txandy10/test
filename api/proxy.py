@@ -21,19 +21,26 @@ class handler(BaseHTTPRequestHandler):
             target_url = "https://" + target_url
 
         try:
+            parsed_target = urlparse(target_url)
+            base_origin = f"{parsed_target.scheme}://{parsed_target.netloc}"
+
+            # Request with User-Agent and Referer to bypass hotlink blocks
             req = urllib.request.Request(
                 target_url,
-                headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}
+                headers={
+                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+                    "Referer": base_origin + "/"
+                }
             )
+            
             with urllib.request.urlopen(req, timeout=10) as response:
                 content_type = response.headers.get('Content-Type', '')
                 raw_content = response.read()
 
-                # Parse and rewrite HTML pages to route images and links through the proxy
                 if 'text/html' in content_type:
                     soup = BeautifulSoup(raw_content, 'html.parser')
                     
-                    # Rewrite standard tags: a, img, link, script
+                    # 1. Rewrite standard tags (a, img, link, script)
                     for tag in soup.find_all(['a', 'img', 'link', 'script']):
                         attr = 'href' if tag.has_attr('href') else ('src' if tag.has_attr('src') else None)
                         if attr:
@@ -42,7 +49,16 @@ class handler(BaseHTTPRequestHandler):
                                 abs_url = urljoin(target_url, original_url)
                                 tag[attr] = f"/api/proxy?url={abs_url}"
 
-                    # Rewrite responsive images (srcset)
+                    # 2. Rewrite lazy-loading attributes used by modern sites (data-src, data-original)
+                    for tag in soup.find_all(True):
+                        for lazy_attr in ['data-src', 'data-original', 'data-lazy-src']:
+                            if tag.has_attr(lazy_attr):
+                                original_url = tag[lazy_attr]
+                                if original_url and not original_url.startswith('data:'):
+                                    abs_url = urljoin(target_url, original_url)
+                                    tag[lazy_attr] = f"/api/proxy?url={abs_url}"
+
+                    # 3. Rewrite responsive images (srcset)
                     for tag in soup.find_all(attrs={'srcset': True}):
                         srcset = tag['srcset']
                         new_srcset_parts = []
@@ -65,7 +81,7 @@ class handler(BaseHTTPRequestHandler):
 
                     content = str(soup).encode('utf-8')
                 else:
-                    # Pass through images, stylesheets, and other assets as raw bytes
+                    # Pass through binary assets (images, CSS, fonts, etc.) correctly
                     content = raw_content
                 
                 self.send_response(200)
