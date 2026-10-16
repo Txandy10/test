@@ -24,6 +24,7 @@ class handler(BaseHTTPRequestHandler):
             parsed_target = urlparse(target_url)
             base_origin = f"{parsed_target.scheme}://{parsed_target.netloc}"
 
+            # Request with User-Agent and Referer headers to bypass blocks
             req = urllib.request.Request(
                 target_url,
                 headers={
@@ -39,14 +40,20 @@ class handler(BaseHTTPRequestHandler):
                 if 'text/html' in content_type:
                     soup = BeautifulSoup(raw_content, 'html.parser')
                     
-                    # Aggressively rewrite ANY tag attribute that looks like a URL source or link
+                    # Aggressively rewrite ANY tag attribute containing a resource path or URL
                     for tag in soup.find_all(True):
-                        for attr in ['href', 'src', 'data-src', 'data-original', 'data-lazy-src', 'action']:
+                        for attr in ['href', 'src', 'data-src', 'data-original', 'data-lazy-src', 'action', 'content']:
                             if tag.has_attr(attr):
                                 val = tag[attr]
                                 if val and not val.startswith('data:') and not val.startswith('#') and not val.startswith('javascript:'):
-                                    abs_url = urljoin(target_url, val)
-                                    tag[attr] = f"/api/proxy?url={abs_url}"
+                                    # Handle absolute or relative URLs pointing to CDNs
+                                    if val.startswith('http://') or val.startswith('https://') or val.startswith('//'):
+                                        if val.startswith('//'):
+                                            val = 'https:' + val
+                                        tag[attr] = f"/api/proxy?url={val}"
+                                    elif not val.startswith('/api/proxy'):
+                                        abs_url = urljoin(target_url, val)
+                                        tag[attr] = f"/api/proxy?url={abs_url}"
 
                     # Rewrite responsive images (srcset)
                     for tag in soup.find_all(attrs={'srcset': True}):
@@ -61,6 +68,8 @@ class handler(BaseHTTPRequestHandler):
                             descriptor = bits[1] if len(bits) > 1 else ''
                             
                             if not img_url.startswith('data:'):
+                                if img_url.startswith('//'):
+                                    img_url = 'https:' + img_url
                                 abs_url = urljoin(target_url, img_url)
                                 proxy_url = f"/api/proxy?url={abs_url}"
                                 new_srcset_parts.append(f"{proxy_url} {descriptor}".strip())
@@ -71,6 +80,7 @@ class handler(BaseHTTPRequestHandler):
 
                     content = str(soup).encode('utf-8')
                 else:
+                    # Pass through binary assets (images, CSS, JS chunks, fonts, etc.) correctly
                     content = raw_content
                 
                 self.send_response(200)
