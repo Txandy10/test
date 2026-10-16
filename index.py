@@ -9,14 +9,93 @@ app = Flask(__name__)
 def index():
     return """
         <!DOCTYPE html>
-        <html>
-        <head><title>Vercel Python Web Proxy</title></head>
-        <body style="font-family: Arial; text-align: center; margin-top: 50px;">
-            <h2>Vercel Web Proxy</h2>
-            <form action="/proxy" method="get">
-                <input type="text" name="url" placeholder="https://example.com" style="width: 400px; padding: 8px;" required>
-                <button type="submit" style="padding: 8px 15px;">Go</button>
-            </form>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Vercel Web Proxy</title>
+            <style>
+                * {
+                    box-sizing: border-box;
+                    margin: 0;
+                    padding: 0;
+                }
+                body {
+                    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+                    background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+                    color: #f8fafc;
+                    height: 100vh;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                }
+                .card {
+                    background: rgba(30, 41, 59, 0.7);
+                    backdrop-filter: blur(12px);
+                    border: 1px solid rgba(255, 255, 255, 0.1);
+                    padding: 40px;
+                    border-radius: 16px;
+                    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+                    text-align: center;
+                    width: 100%;
+                    max-width: 500px;
+                }
+                h2 {
+                    margin-bottom: 8px;
+                    font-size: 24px;
+                    font-weight: 700;
+                    letter-spacing: -0.025em;
+                }
+                p {
+                    color: #94a3b8;
+                    font-size: 14px;
+                    margin-bottom: 24px;
+                }
+                .form-group {
+                    display: flex;
+                    gap: 8px;
+                }
+                input[type="text"] {
+                    flex: 1;
+                    padding: 12px 16px;
+                    background: #0f172a;
+                    border: 1px solid #334155;
+                    border-radius: 8px;
+                    color: #fff;
+                    font-size: 15px;
+                    outline: none;
+                    transition: border-color 0.2s;
+                }
+                input[type="text"]:focus {
+                    border-color: #6366f1;
+                }
+                button {
+                    background: #6366f1;
+                    color: white;
+                    border: none;
+                    padding: 12px 20px;
+                    border-radius: 8px;
+                    font-size: 15px;
+                    font-weight: 600;
+                    cursor: pointer;
+                    transition: background 0.2s;
+                }
+                button:hover {
+                    background: #4f46e5;
+                }
+            </style>
+        </head>
+        <body>
+            <div class="card">
+                <h2>Web Proxy</h2>
+                <p>Enter any URL below to browse securely through Vercel.</p>
+                <form action="/proxy" method="get">
+                    <div class="form-group">
+                        <input type="text" name="url" placeholder="https://example.com" required autocomplete="off">
+                        <button type="submit">Go</button>
+                    </div>
+                </form>
+            </div>
         </body>
         </html>
     """
