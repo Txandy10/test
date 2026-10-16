@@ -32,11 +32,35 @@ class handler(BaseHTTPRequestHandler):
                 if 'text/html' in content_type:
                     soup = BeautifulSoup(raw_content, 'html.parser')
                     
+                    # 1. Rewrite standard tags (a, img, link, script)
                     for tag in soup.find_all(['a', 'img', 'link', 'script']):
                         attr = 'href' if tag.has_attr('href') else ('src' if tag.has_attr('src') else None)
                         if attr:
-                            abs_url = urljoin(target_url, tag[attr])
-                            tag[attr] = f"/api/proxy?url={abs_url}"
+                            original_url = tag[attr]
+                            if original_url and not original_url.startswith('data:'):
+                                abs_url = urljoin(target_url, original_url)
+                                tag[attr] = f"/api/proxy?url={abs_url}"
+
+                    # 2. Rewrite responsive images (srcset)
+                    for tag in soup.find_all(attrs={'srcset': True}):
+                        srcset = tag['srcset']
+                        new_srcset_parts = []
+                        for part in srcset.split(','):
+                            part = part.strip()
+                            if not part:
+                                continue
+                            bits = part.split(' ')
+                            img_url = bits[0]
+                            descriptor = bits[1] if len(bits) > 1 else ''
+                            
+                            if not img_url.startswith('data:'):
+                                abs_url = urljoin(target_url, img_url)
+                                proxy_url = f"/api/proxy?url={abs_url}"
+                                new_srcset_parts.append(f"{proxy_url} {descriptor}".strip())
+                            else:
+                                new_srcset_parts.append(part)
+                        
+                        tag['srcset'] = ', '.join(new_srcset_parts)
 
                     content = str(soup).encode('utf-8')
                 else:
