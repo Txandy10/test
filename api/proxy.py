@@ -29,19 +29,20 @@ class handler(BaseHTTPRequestHandler):
                 content_type = response.headers.get('Content-Type', '')
                 raw_content = response.read()
 
+                # Parse and rewrite HTML pages to route images and links through the proxy
                 if 'text/html' in content_type:
                     soup = BeautifulSoup(raw_content, 'html.parser')
                     
-                    # 1. Rewrite standard tags (a, img, link, script)
+                    # Rewrite standard tags: a, img, link, script
                     for tag in soup.find_all(['a', 'img', 'link', 'script']):
                         attr = 'href' if tag.has_attr('href') else ('src' if tag.has_attr('src') else None)
                         if attr:
                             original_url = tag[attr]
-                            if original_url and not original_url.startswith('data:'):
+                            if original_url and not original_url.startswith('data:') and not original_url.startswith('#'):
                                 abs_url = urljoin(target_url, original_url)
                                 tag[attr] = f"/api/proxy?url={abs_url}"
 
-                    # 2. Rewrite responsive images (srcset)
+                    # Rewrite responsive images (srcset)
                     for tag in soup.find_all(attrs={'srcset': True}):
                         srcset = tag['srcset']
                         new_srcset_parts = []
@@ -64,6 +65,7 @@ class handler(BaseHTTPRequestHandler):
 
                     content = str(soup).encode('utf-8')
                 else:
+                    # Pass through images, stylesheets, and other assets as raw bytes
                     content = raw_content
                 
                 self.send_response(200)
