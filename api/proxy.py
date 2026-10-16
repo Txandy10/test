@@ -36,7 +36,7 @@ class handler(BaseHTTPRequestHandler):
                         attr = 'href' if tag.has_attr('href') else ('src' if tag.has_attr('src') else None)
                         if attr:
                             abs_url = urljoin(target_url, tag[attr])
-                            tag[attr] = f"/proxy?url={abs_url}"
+                            tag[attr] = f"/api/proxy?url={abs_url}"
 
                     content = str(soup).encode('utf-8')
                 else:
