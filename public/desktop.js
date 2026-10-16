@@ -131,7 +131,7 @@ function calcCompute() {
     } 
 }
 
-// Smart URL & Google Search Fallback Helper
+// Smart URL & DuckDuckGo Search Fallback Helper
 function getTargetUrl(input) {
     input = input.trim();
     const isUrl = /^(https?:\/\/)?([a-zA-Z0-9_-]+\.)+[a-zA-Z]{2,}(:\d+)?(\/.*)?$/.test(input);
@@ -142,8 +142,7 @@ function getTargetUrl(input) {
         }
         return input;
     } else {
-        // If not a valid URL format, open Google search for the typed text
-        return `https://www.google.com/search?q=${encodeURIComponent(input)}`;
+        return `https://html.duckduckgo.com/html/?q=${encodeURIComponent(input)}`;
     }
 }
 
