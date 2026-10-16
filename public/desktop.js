@@ -55,15 +55,15 @@ function toggleFullscreen(id) {
     }
 }
 
-// Wallpaper
+// Wallpaper Switcher
 function setWallpaper(url) {
     document.body.style.backgroundImage = `url('${url}')`;
 }
 
-// File System
+// Virtual File System (LocalStorage)
 function getFiles() {
     const saved = localStorage.getItem('webos_files');
-    return saved ? JSON.parse(saved) : [{ name: 'welcome.txt', content: 'Hello from WebOS Pro!' }];
+    return saved ? JSON.parse(saved) : [{ name: 'welcome.txt', content: 'Hello from WebOS Pro! You can create and edit notes here.' }];
 }
 
 function loadFiles() {
@@ -73,7 +73,7 @@ function loadFiles() {
     grid.innerHTML = '';
     files.forEach((f) => {
         grid.innerHTML += `
-            <div onclick="openFile('${f.name}')" class="p-3 bg-white/5 hover:bg-white/10 rounded-xl flex flex-col items-center cursor-pointer">
+            <div onclick="openFile('${f.name}')" class="p-3 bg-white/5 hover:bg-white/10 rounded-xl flex flex-col items-center cursor-pointer transition">
                 <i class="fa-solid fa-file-lines text-emerald-400 text-2xl mb-1"></i>
                 <span class="text-xs truncate w-full text-center">${f.name}</span>
             </div>
@@ -82,7 +82,7 @@ function loadFiles() {
 }
 
 function createNewFilePrompt() {
-    const name = prompt("File name:");
+    const name = prompt("Enter file name (e.g. notes.txt):");
     if (!name) return;
     const files = getFiles();
     files.push({ name, content: "" });
@@ -107,11 +107,11 @@ function saveCurrentNote() {
     if (existing) existing.content = content;
     else files.push({ name, content });
     localStorage.setItem('webos_files', JSON.stringify(files));
-    alert("Saved!");
+    alert("File saved successfully to Virtual PC!");
     loadFiles();
 }
 
-// Calculator
+// Calculator App Logic
 let calcVal = "";
 function calcAppend(v) { 
     calcVal += v; 
@@ -131,18 +131,37 @@ function calcCompute() {
     } 
 }
 
-// Browser Proxy Routing (Updated to /api/proxy)
-function loadUrl(e) {
-    e.preventDefault();
-    const url = document.getElementById('urlInput').value;
-    document.getElementById('browserFrame').src = `/api/proxy?url=${encodeURIComponent(url)}`;
-}
-function loadUrlBtn() {
-    const url = document.getElementById('urlInput').value;
-    document.getElementById('browserFrame').src = `/api/proxy?url=${encodeURIComponent(url)}`;
+// Smart URL & Google Search Fallback Helper
+function getTargetUrl(input) {
+    input = input.trim();
+    const isUrl = /^(https?:\/\/)?([a-zA-Z0-9_-]+\.)+[a-zA-Z]{2,}(:\d+)?(\/.*)?$/.test(input);
+    
+    if (isUrl || input.startsWith('http://') || input.startsWith('https://')) {
+        if (!input.startsWith('http://') && !input.startsWith('https://')) {
+            return 'https://' + input;
+        }
+        return input;
+    } else {
+        // If not a valid URL format, open Google search for the typed text
+        return `https://www.google.com/search?q=${encodeURIComponent(input)}`;
+    }
 }
 
-// Window Dragging
+// Browser Proxy Routing & Navigation
+function loadUrl(e) {
+    e.preventDefault();
+    const rawInput = document.getElementById('urlInput').value;
+    const finalUrl = getTargetUrl(rawInput);
+    document.getElementById('browserFrame').src = `/api/proxy?url=${encodeURIComponent(finalUrl)}`;
+}
+
+function loadUrlBtn() {
+    const rawInput = document.getElementById('urlInput').value;
+    const finalUrl = getTargetUrl(rawInput);
+    document.getElementById('browserFrame').src = `/api/proxy?url=${encodeURIComponent(finalUrl)}`;
+}
+
+// Window Dragging Mechanics
 let activeWin = null, offX = 0, offY = 0;
 function startDrag(e, id) {
     activeWin = document.getElementById(id);
@@ -152,12 +171,14 @@ function startDrag(e, id) {
     document.addEventListener('mousemove', onDrag);
     document.addEventListener('mouseup', stopDrag);
 }
+
 function onDrag(e) { 
     if (activeWin) { 
         activeWin.style.left = (e.clientX - offX) + 'px'; 
         activeWin.style.top = (e.clientY - offY) + 'px'; 
     } 
 }
+
 function stopDrag() { 
     activeWin = null; 
     document.removeEventListener('mousemove', onDrag); 
