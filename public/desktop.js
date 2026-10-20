@@ -1,15 +1,17 @@
-// Register the Ultraviolet Service Worker on startup
+// Register the Ultraviolet Service Worker on startup with ready-check
 if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js', {
-            scope: __uv$config ? __uv$config.prefix : '/service/'
-        })
-        .then((registration) => {
-            console.log('UV Service Worker active:', registration.scope);
-        })
-        .catch((error) => {
+    window.addEventListener('load', async () => {
+        try {
+            const registration = await navigator.serviceWorker.register('/sw.js', {
+                scope: '/service/'
+            });
+            
+            // Wait until the service worker is fully active and controlling the page
+            await navigator.serviceWorker.ready;
+            console.log('UV Service Worker is active and ready:', registration.scope);
+        } catch (error) {
             console.error('UV Service Worker registration failed:', error);
-        });
+        }
     });
 }
 
