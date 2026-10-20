@@ -6,36 +6,36 @@
     <title>WebOS Pro</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="style.css">
 </head>
-<body class="h-screen w-screen flex flex-col justify-between text-slate-100 overflow-hidden">
+<body class="h-screen w-screen flex flex-col justify-between text-slate-100 overflow-hidden" onclick="closeStartMenu()">
 
     <!-- Desktop -->
     <div id="desktop" class="flex-1 p-6 grid grid-cols-2 sm:grid-cols-6 gap-6 content-start z-0" onclick="closeStartMenu()">
-        <div onclick="openApp('browserWindow')" class="app-icon cursor-pointer flex flex-col items-center">
+        <div onclick="openApp('browserWindow'); event.stopPropagation();" class="app-icon cursor-pointer flex flex-col items-center">
             <div class="icon-box w-14 h-14 bg-indigo-600 rounded-2xl flex items-center justify-center text-xl shadow-lg"><i class="fa-solid fa-globe"></i></div>
             <span class="text-xs mt-2 font-medium">Browser</span>
         </div>
-        <div onclick="openApp('filesWindow'); loadFiles();" class="app-icon cursor-pointer flex flex-col items-center">
+        <div onclick="openApp('filesWindow'); loadFiles(); event.stopPropagation();" class="app-icon cursor-pointer flex flex-col items-center">
             <div class="icon-box w-14 h-14 bg-amber-500 rounded-2xl flex items-center justify-center text-xl shadow-lg"><i class="fa-solid fa-folder-open"></i></div>
             <span class="text-xs mt-2 font-medium">Files</span>
         </div>
-        <div onclick="openApp('notepadWindow')" class="app-icon cursor-pointer flex flex-col items-center">
+        <div onclick="openApp('notepadWindow'); event.stopPropagation();" class="app-icon cursor-pointer flex flex-col items-center">
             <div class="icon-box w-14 h-14 bg-emerald-600 rounded-2xl flex items-center justify-center text-xl shadow-lg"><i class="fa-solid fa-note-sticky"></i></div>
             <span class="text-xs mt-2 font-medium">Notepad</span>
         </div>
-        <div onclick="openApp('calcWindow')" class="app-icon cursor-pointer flex flex-col items-center">
+        <div onclick="openApp('calcWindow'); event.stopPropagation();" class="app-icon cursor-pointer flex flex-col items-center">
             <div class="icon-box w-14 h-14 bg-blue-600 rounded-2xl flex items-center justify-center text-xl shadow-lg"><i class="fa-solid fa-calculator"></i></div>
             <span class="text-xs mt-2 font-medium">Calculator</span>
         </div>
-        <div onclick="openApp('settingsWindow')" class="app-icon cursor-pointer flex flex-col items-center">
+        <div onclick="openApp('settingsWindow'); event.stopPropagation();" class="app-icon cursor-pointer flex flex-col items-center">
             <div class="icon-box w-14 h-14 bg-slate-700 rounded-2xl flex items-center justify-center text-xl shadow-lg"><i class="fa-solid fa-gear"></i></div>
             <span class="text-xs mt-2 font-medium">Settings</span>
         </div>
     </div>
 
     <!-- Start Menu -->
-    <div id="startMenu" class="hidden absolute bottom-16 left-3 w-80 h-96 rounded-2xl z-50 p-4 bg-slate-900/90 backdrop-blur-xl border border-white/10 flex flex-col shadow-2xl">
+    <div id="startMenu" class="hidden absolute bottom-16 left-3 w-80 h-96 rounded-2xl z-50 p-4 bg-slate-900/90 backdrop-blur-xl border border-white/10 flex flex-col shadow-2xl" onclick="event.stopPropagation()">
         <div class="flex items-center space-x-3 pb-4 border-b border-white/10">
             <div class="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center text-white font-bold"><i class="fa-solid fa-cubes"></i></div>
             <div>
@@ -53,7 +53,7 @@
     </div>
 
     <!-- BROWSER WINDOW -->
-    <div id="browserWindow" class="window hidden absolute top-10 left-12 w-[850px] h-[520px] bg-slate-900/90 backdrop-blur-xl rounded-xl flex flex-col overflow-hidden shadow-2xl z-10 border border-white/10">
+    <div id="browserWindow" class="window hidden absolute top-10 left-12 w-[850px] h-[520px] bg-slate-900/90 backdrop-blur-xl rounded-xl flex flex-col overflow-hidden shadow-2xl z-10 border border-white/10" onclick="event.stopPropagation()">
         <div class="h-10 bg-slate-900/80 border-b border-white/10 flex items-center justify-between px-4 select-none cursor-move" onmousedown="startDrag(event, 'browserWindow')">
             <div class="flex items-center space-x-2">
                 <div onclick="closeApp('browserWindow')" class="w-3 h-3 rounded-full bg-rose-500 cursor-pointer"></div>
@@ -67,12 +67,11 @@
             </form>
             <button onclick="loadUrlBtn()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-1.5 rounded-lg text-sm">Go</button>
         </div>
-        <!-- Pointed to proxy route for client-side service worker handling -->
         <iframe id="browserFrame" src="about:blank" class="w-full flex-1 border-none bg-white"></iframe>
     </div>
 
     <!-- FILES WINDOW -->
-    <div id="filesWindow" class="window hidden absolute top-16 left-24 w-[650px] h-[400px] bg-slate-900/90 backdrop-blur-xl rounded-xl flex flex-col overflow-hidden shadow-2xl z-10 border border-white/10">
+    <div id="filesWindow" class="window hidden absolute top-16 left-24 w-[650px] h-[400px] bg-slate-900/90 backdrop-blur-xl rounded-xl flex flex-col overflow-hidden shadow-2xl z-10 border border-white/10" onclick="event.stopPropagation()">
         <div class="h-10 bg-slate-900/80 border-b border-white/10 flex items-center justify-between px-4 select-none cursor-move" onmousedown="startDrag(event, 'filesWindow')">
             <div class="flex items-center space-x-2">
                 <div onclick="closeApp('filesWindow')" class="w-3 h-3 rounded-full bg-rose-500 cursor-pointer"></div>
@@ -84,7 +83,7 @@
     </div>
 
     <!-- NOTEPAD WINDOW -->
-    <div id="notepadWindow" class="window hidden absolute top-20 left-36 w-[550px] h-[360px] bg-slate-900/90 backdrop-blur-xl rounded-xl flex flex-col overflow-hidden shadow-2xl z-10 border border-white/10">
+    <div id="notepadWindow" class="window hidden absolute top-20 left-36 w-[550px] h-[360px] bg-slate-900/90 backdrop-blur-xl rounded-xl flex flex-col overflow-hidden shadow-2xl z-10 border border-white/10" onclick="event.stopPropagation()">
         <div class="h-10 bg-slate-900/80 border-b border-white/10 flex items-center justify-between px-4 select-none cursor-move" onmousedown="startDrag(event, 'notepadWindow')">
             <div class="flex items-center space-x-2">
                 <div onclick="closeApp('notepadWindow')" class="w-3 h-3 rounded-full bg-rose-500 cursor-pointer"></div>
@@ -96,7 +95,7 @@
     </div>
 
     <!-- CALCULATOR WINDOW -->
-    <div id="calcWindow" class="window hidden absolute top-24 left-44 w-[300px] h-[380px] bg-slate-900/90 backdrop-blur-xl rounded-xl flex flex-col overflow-hidden shadow-2xl z-10 border border-white/10">
+    <div id="calcWindow" class="window hidden absolute top-24 left-44 w-[300px] h-[380px] bg-slate-900/90 backdrop-blur-xl rounded-xl flex flex-col overflow-hidden shadow-2xl z-10 border border-white/10" onclick="event.stopPropagation()">
         <div class="h-10 bg-slate-900/80 border-b border-white/10 flex items-center justify-between px-4 select-none cursor-move" onmousedown="startDrag(event, 'calcWindow')">
             <div class="flex items-center space-x-2">
                 <div onclick="closeApp('calcWindow')" class="w-3 h-3 rounded-full bg-rose-500 cursor-pointer"></div>
@@ -128,7 +127,7 @@
     </div>
 
     <!-- SETTINGS WINDOW -->
-    <div id="settingsWindow" class="window hidden absolute top-12 left-60 w-[550px] h-[380px] bg-slate-900/90 backdrop-blur-xl rounded-xl flex flex-col overflow-hidden shadow-2xl z-10 border border-white/10">
+    <div id="settingsWindow" class="window hidden absolute top-12 left-60 w-[550px] h-[380px] bg-slate-900/90 backdrop-blur-xl rounded-xl flex flex-col overflow-hidden shadow-2xl z-10 border border-white/10" onclick="event.stopPropagation()">
         <div class="h-10 bg-slate-900/80 border-b border-white/10 flex items-center justify-between px-4 select-none cursor-move" onmousedown="startDrag(event, 'settingsWindow')">
             <div class="flex items-center space-x-2">
                 <div onclick="closeApp('settingsWindow')" class="w-3 h-3 rounded-full bg-rose-500 cursor-pointer"></div>
@@ -152,23 +151,6 @@
     </div>
 
     <!-- Main Desktop and Helper Script -->
-    <script src="/desktop.js"></script>
-    <script>
-        // Ensure start menu helper functions exist so onclick events never fail
-        function toggleStartMenu(event) {
-            if (event) event.stopPropagation();
-            const menu = document.getElementById('startMenu');
-            if (menu) {
-                menu.classList.toggle('hidden');
-            }
-        }
-
-        function closeStartMenu() {
-            const menu = document.getElementById('startMenu');
-            if (menu && !menu.classList.contains('hidden')) {
-                menu.classList.add('hidden');
-            }
-        }
-    </script>
+    <script src="desktop.js"></script>
 </body>
 </html>
