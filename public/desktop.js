@@ -1,133 +1,185 @@
-// desktop.js - WebOS Frontend and Proxy Window Manager
-
-// Register the Service Worker on startup
+// Register the Service Worker for client-side proxying on startup
 if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js')
-      .then((registration) => {
-        console.log('WebOS Proxy Service Worker active:', registration.scope);
-      })
-      .catch((error) => {
-        console.error('Service Worker registration failed:', error);
-      });
-  });
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+            .then((registration) => {
+                console.log('WebOS Proxy Service Worker active:', registration.scope);
+            })
+            .catch((error) => {
+                console.error('Service Worker registration failed:', error);
+            });
+    });
 }
 
-/**
- * Opens a new window on the WebOS desktop containing a proxied iframe.
- * @param {string} targetUrl - The external URL or game link to load.
- */
-function openWebOSBrowser(targetUrl) {
-  // Prevent empty inputs
-  if (!targetUrl) return;
+// Clock updates
+function updateClock() {
+    const clockEl = document.getElementById('clock');
+    if (clockEl) {
+        const now = new Date();
+        clockEl.textContent = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    }
+}
+setInterval(updateClock, 1000);
+updateClock();
 
-  // Format URL if user forgot https://
-  if (!targetUrl.startsWith('http://') && !targetUrl.startsWith('https://')) {
-    targetUrl = 'https://' + targetUrl;
-  }
-
-  // Create the desktop window container
-  const windowEl = document.createElement('div');
-  windowEl.className = 'os-window';
-  windowEl.style.cssText = `
-    position: absolute;
-    top: 50px;
-    left: 50px;
-    width: 800px;
-    height: 500px;
-    background: #1e1e1e;
-    border: 1px solid #444;
-    border-radius: 8px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-    display: flex;
-    flex-direction: column;
-    z-index: 1000;
-  `;
-
-  // Construct window header with controls
-  const headerEl = document.createElement('div');
-  headerEl.className = 'window-header';
-  headerEl.style.cssText = `
-    background: #2d2d2d;
-    padding: 8px 12px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    color: #fff;
-    font-family: sans-serif;
-    font-size: 14px;
-    border-top-left-radius: 8px;
-    border-top-right-radius: 8px;
-    cursor: move;
-  `;
-  headerEl.innerHTML = `
-    <span class="window-title">Browser: ${targetUrl}</span>
-    <div class="window-controls">
-      <button class="close-btn" style="background: #ff5f56; border: none; width: 12px; height: 12px; border-radius: 50%; cursor: pointer;"></button>
-    </div>
-  `;
-
-  // Construct window body containing the iframe pointing to our proxy route
-  const bodyEl = document.createElement('div');
-  bodyEl.className = 'window-body';
-  bodyEl.style.cssText = `
-    flex: 1;
-    background: #fff;
-    overflow: hidden;
-    border-bottom-left-radius: 8px;
-    border-bottom-right-radius: 8px;
-  `;
-
-  // Route through the client-side proxy path handled by sw.js
-  const proxiedSrc = `/proxy/?url=${encodeURIComponent(targetUrl)}`;
-  bodyEl.innerHTML = `<iframe src="${proxiedSrc}" style="width: 100%; height: 100%; border: none;"></iframe>`;
-
-  // Assemble window
-  windowEl.appendChild(headerEl);
-  windowEl.appendChild(bodyEl);
-  document.body.appendChild(windowEl);
-
-  // Close button functionality
-  headerEl.querySelector('.close-btn').addEventListener('click', () => {
-    windowEl.remove();
-  });
-
-  // Basic drag-and-drop window movement logic
-  let isDragging = false;
-  let offsetX, offsetY;
-
-  headerEl.addEventListener('mousedown', (e) => {
-    isDragging = true;
-    offsetX = e.clientX - windowEl.offsetLeft;
-    offsetY = e.clientY - windowEl.offsetTop;
-    windowEl.style.zIndex = String(Date.now()); // Bring to front
-  });
-
-  document.addEventListener('mousemove', (e) => {
-    if (!isDragging) return;
-    windowEl.style.left = `${e.clientX - offsetX}px`;
-    windowEl.style.top = `${e.clientY - offsetY}px`;
-  });
-
-  document.addEventListener('mouseup', () => {
-    isDragging = false;
-  });
+// App Window Management Functions
+function openApp(windowId) {
+    const win = document.getElementById(windowId);
+    if (win) {
+        win.classList.remove('hidden');
+        win.style.zIndex = String(Date.now());
+    }
 }
 
-// Hook up event listeners when the DOM is ready
-document.addEventListener('DOMContentLoaded', () => {
-  const launchButton = document.getElementById('launch-url-btn');
-  const urlInput = document.getElementById('desktop-url-input');
+function closeApp(windowId) {
+    const win = document.getElementById(windowId);
+    if (win) {
+        win.classList.add('hidden');
+    }
+}
 
-  if (launchButton && urlInput) {
-    launchButton.addEventListener('click', () => {
-      openWebOSBrowser(urlInput.value);
-    });
+function toggleFullscreen(windowId) {
+    const win = document.getElementById(windowId);
+    if (win) {
+        if (!win.dataset.maximized) {
+            win.dataset.prevStyle = win.style.cssText;
+            win.style.top = '0px';
+            win.style.left = '0px';
+            win.style.width = '100vw';
+            win.style.height = 'calc(100vh - 3.5rem)';
+            win.dataset.maximized = 'true';
+        } else {
+            win.style.cssText = win.dataset.prevStyle;
+            delete win.dataset.maximized;
+        }
+    }
+}
 
-    urlInput.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') {
-        openWebOSBrowser(urlInput.value);
-      }
-    });
-  }
-});
+// Start Menu Controls
+function toggleStartMenu(event) {
+    if (event) event.stopPropagation();
+    const menu = document.getElementById('startMenu');
+    if (menu) {
+        menu.classList.toggle('hidden');
+    }
+}
+
+function closeStartMenu() {
+    const menu = document.getElementById('startMenu');
+    if (menu && !menu.classList.contains('hidden')) {
+        menu.classList.add('hidden');
+    }
+}
+
+// Browser Proxy Loading Functions
+function loadUrl(event) {
+    event.preventDefault();
+    loadUrlBtn();
+}
+
+function loadUrlBtn() {
+    const input = document.getElementById('urlInput');
+    const frame = document.getElementById('browserFrame');
+    if (!input || !frame) return;
+
+    let targetUrl = input.value.trim();
+    if (!targetUrl) return;
+
+    if (!targetUrl.startsWith('http://') && !targetUrl.startsWith('https://')) {
+        targetUrl = 'https://' + targetUrl;
+    }
+
+    // Route through the client-side proxy worker
+    frame.src = `/proxy/?url=${encodeURIComponent(targetUrl)}`;
+}
+
+// Calculator Logic
+let calcExpression = "0";
+
+function calcAppend(val) {
+    if (calcExpression === "0" && val !== '.') {
+        calcExpression = val;
+    } else {
+        calcExpression += val;
+    }
+    updateCalcDisplay();
+}
+
+function calcClear() {
+    calcExpression = "0";
+    updateCalcDisplay();
+}
+
+function calcCompute() {
+    try {
+        calcExpression = String(eval(calcExpression));
+    } catch (e) {
+        calcExpression = "Error";
+    }
+    updateCalcDisplay();
+}
+
+function updateCalcDisplay() {
+    const display = document.getElementById('calcDisplay');
+    if (display) {
+        display.textContent = calcExpression;
+    }
+}
+
+// Settings / Wallpaper Logic
+function setWallpaper(imageUrl) {
+    const desktop = document.getElementById('desktop');
+    if (desktop) {
+        desktop.style.backgroundImage = `url('${imageUrl}')`;
+        desktop.style.backgroundSize = 'cover';
+        desktop.style.backgroundPosition = 'center';
+    }
+}
+
+// Files & Notepad Placeholders to prevent reference errors
+function loadFiles() {
+    const grid = document.getElementById('fileGrid');
+    if (grid && grid.children.length === 0) {
+        grid.innerHTML = '<div class="text-xs text-slate-400">No files saved yet. Click New File to create one!</div>';
+    }
+}
+
+function createNewFilePrompt() {
+    alert('File creation feature active.');
+}
+
+function saveCurrentNote() {
+    alert('Note saved successfully!');
+}
+
+// Window Dragging Logic
+let activeWindow = null;
+let startX = 0, startY = 0, initialX = 0, initialY = 0;
+
+function startDrag(event, windowId) {
+    activeWindow = document.getElementById(windowId);
+    if (!activeWindow) return;
+
+    activeWindow.style.zIndex = String(Date.now());
+    startX = event.clientX;
+    startY = event.clientY;
+    initialX = activeWindow.offsetLeft;
+    initialY = activeWindow.offsetTop;
+
+    document.addEventListener('mousemove', onDrag);
+    document.addEventListener('mouseup', stopDrag);
+}
+
+function onDrag(event) {
+    if (!activeWindow) return;
+    const dx = event.clientX - startX;
+    const dy = event.clientY - startY;
+    activeWindow.style.left = `${initialX + dx}px`;
+    activeWindow.style.top = `${initialY + dy}px`;
+}
+
+function stopDrag() {
+    document.removeEventListener('mousemove', onDrag);
+    document.removeEventListener('mouseup', stopDrag);
+    activeWindow = null;
+}
