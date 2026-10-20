@@ -1,4 +1,3 @@
-// sw.js - Ultraviolet Client-Side Proxy Service Worker Handler
 importScripts('/uv/uv.bundle.js');
 importScripts('/uv/uv.config.js');
 importScripts('/uv/uv.sw.js');
