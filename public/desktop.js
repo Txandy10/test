@@ -1,13 +1,15 @@
-// Register the Service Worker for client-side proxying on startup
+// Register the Ultraviolet Service Worker on startup
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js')
-            .then((registration) => {
-                console.log('WebOS Proxy Service Worker active:', registration.scope);
-            })
-            .catch((error) => {
-                console.error('Service Worker registration failed:', error);
-            });
+        navigator.serviceWorker.register('/sw.js', {
+            scope: __uv$config ? __uv$config.prefix : '/service/'
+        })
+        .then((registration) => {
+            console.log('UV Service Worker active:', registration.scope);
+        })
+        .catch((error) => {
+            console.error('UV Service Worker registration failed:', error);
+        });
     });
 }
 
@@ -71,7 +73,7 @@ function closeStartMenu() {
     }
 }
 
-// Browser Proxy Loading Functions
+// Browser Proxy Loading Functions using Ultraviolet encoding
 function loadUrl(event) {
     event.preventDefault();
     loadUrlBtn();
@@ -85,12 +87,20 @@ function loadUrlBtn() {
     let targetUrl = input.value.trim();
     if (!targetUrl) return;
 
-    if (!targetUrl.startsWith('http://') && !targetUrl.startsWith('https://')) {
+    // Handle search queries vs direct URLs
+    if (!targetUrl.includes('.') && !targetUrl.startsWith('http://') && !targetUrl.startsWith('https://')) {
+        targetUrl = 'https://www.google.com/search?q=' + encodeURIComponent(targetUrl);
+    } else if (!targetUrl.startsWith('http://') && !targetUrl.startsWith('https://')) {
         targetUrl = 'https://' + targetUrl;
     }
 
-    // Route through the client-side proxy worker
-    frame.src = `/proxy/?url=${encodeURIComponent(targetUrl)}`;
+    // Use Ultraviolet config prefix and encoding function if loaded, otherwise fallback
+    if (window.__uv$config && window.__uv$config.encodeUrl) {
+        frame.src = __uv$config.prefix + __uv$config.encodeUrl(targetUrl);
+    } else {
+        console.warn('UV config not loaded yet, attempting direct encoded path.');
+        frame.src = `/service/${encodeURIComponent(targetUrl)}`;
+    }
 }
 
 // Calculator Logic
@@ -136,7 +146,7 @@ function setWallpaper(imageUrl) {
     }
 }
 
-// Files & Notepad Placeholders to prevent reference errors
+// Files & Notepad Placeholders
 function loadFiles() {
     const grid = document.getElementById('fileGrid');
     if (grid && grid.children.length === 0) {
