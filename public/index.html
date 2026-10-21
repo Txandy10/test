@@ -130,6 +130,7 @@
     </div>
 
     <!-- SETTINGS WINDOW -->
+   <!-- SETTINGS WINDOW -->
     <div id="settingsWindow" class="window hidden absolute top-12 left-60 w-[550px] h-[380px] bg-slate-900/90 backdrop-blur-xl rounded-xl flex flex-col overflow-hidden shadow-2xl z-10 border border-white/10" onclick="event.stopPropagation()">
         <div class="h-10 bg-slate-900/80 border-b border-white/10 flex items-center justify-between px-4 select-none cursor-move" onmousedown="startDrag(event, 'settingsWindow')">
             <div class="flex items-center space-x-2">
@@ -140,9 +141,14 @@
         <div class="p-6 space-y-4">
             <h3 class="text-sm font-semibold">Change Wallpaper</h3>
             <div class="grid grid-cols-3 gap-3">
-                <div onclick="setWallpaper('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2000&auto=format&fit=crop')" class="h-20 rounded-lg bg-cover bg-center cursor-pointer border border-indigo-500" style="background-image: url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=400&auto=format&fit=crop')"></div>
-                <div onclick="setWallpaper('https://images.unsplash.com/photo-1579546929518-9e396f3cc809?q=80&w=2000&auto=format&fit=crop')" class="h-20 rounded-lg bg-cover bg-center cursor-pointer border border-white/20" style="background-image: url('https://images.unsplash.com/photo-1579546929518-9e396f3cc809?q=80&w=400&auto=format&fit=crop')"></div>
-                <div onclick="setWallpaper('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=2000&auto=format&fit=crop')" class="h-20 rounded-lg bg-cover bg-center cursor-pointer border border-white/20" style="background-image: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=400&auto=format&fit=crop')"></div>
+                <!-- Wallpaper 1 (Replace with your GitHub Raw URL) -->
+                <div onclick="setWallpaper('https://raw.githubusercontent.com/Txandy10/test/main/wallpaper1.webp')" class="h-20 rounded-lg bg-cover bg-center cursor-pointer border border-indigo-500" style="background-image: url('https://raw.githubusercontent.com/YOUR-USERNAME/YOUR-REPO/main/wallpaper1.jpg')"></div>
+                
+                <!-- Wallpaper 2 (Replace with your GitHub Raw URL) -->
+                <div onclick="setWallpaper('https://raw.githubusercontent.com/Txandy10/test/main/wallpaper2.webp')" class="h-20 rounded-lg bg-cover bg-center cursor-pointer border border-white/20" style="background-image: url('https://raw.githubusercontent.com/YOUR-USERNAME/YOUR-REPO/main/wallpaper2.jpg')"></div>
+                
+                <!-- Wallpaper 3 (Replace with your GitHub Raw URL) -->
+                <div onclick="setWallpaper('https://raw.githubusercontent.com/Txandy10/test/main/wallpaper3.webp')" class="h-20 rounded-lg bg-cover bg-center cursor-pointer border border-white/20" style="background-image: url('https://raw.githubusercontent.com/YOUR-USERNAME/YOUR-REPO/main/wallpaper3.jpg')"></div>
             </div>
         </div>
     </div>
