@@ -1,16 +1,14 @@
-// Register the Ultraviolet Service Worker on startup with ready-check
+// Register the Service Worker on startup
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', async () => {
         try {
             const registration = await navigator.serviceWorker.register('/sw.js', {
-                scope: '/service/'
+                scope: '/'
             });
-            
-            // Wait until the service worker is fully active and controlling the page
             await navigator.serviceWorker.ready;
-            console.log('UV Service Worker is active and ready:', registration.scope);
+            console.log('Service Worker is active and ready:', registration.scope);
         } catch (error) {
-            console.error('UV Service Worker registration failed:', error);
+            console.error('Service Worker registration failed:', error);
         }
     });
 }
@@ -75,7 +73,7 @@ function closeStartMenu() {
     }
 }
 
-// Browser Proxy Loading Functions using Ultraviolet encoding
+// Browser Proxy Loading Function using Vercel Rewrites
 function loadUrl(event) {
     event.preventDefault();
     loadUrlBtn();
@@ -96,13 +94,9 @@ function loadUrlBtn() {
         targetUrl = 'https://' + targetUrl;
     }
 
-    // Use Ultraviolet config prefix and encoding function if loaded, otherwise fallback
-    if (window.__uv$config && window.__uv$config.encodeUrl) {
-        frame.src = __uv$config.prefix + __uv$config.encodeUrl(targetUrl);
-    } else {
-        console.warn('UV config not loaded yet, attempting direct encoded path.');
-        frame.src = `/service/${encodeURIComponent(targetUrl)}`;
-    }
+    // Route through the Vercel rewrite proxy path
+    const proxyUrl = `/proxy/?url=${encodeURIComponent(targetUrl)}`;
+    frame.src = proxyUrl;
 }
 
 // Calculator Logic
