@@ -3,160 +3,330 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WebOS Pro</title>
+    <title>WebOS Pro - Windows 11 Edition</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
-    <!-- Ultraviolet Client Configuration Scripts -->
     <script src="/uv/uv.bundle.js"></script>
     <script src="/uv/uv.config.js"></script>
 </head>
-<body class="h-screen w-screen flex flex-col justify-between text-slate-100 overflow-hidden" onclick="closeStartMenu()">
+<body onclick="closeStartMenu()">
 
-    <!-- Desktop -->
-    <div id="desktop" class="flex-1 p-6 grid grid-cols-2 sm:grid-cols-6 gap-6 content-start z-0" onclick="closeStartMenu()">
-        <div onclick="openApp('browserWindow'); event.stopPropagation();" class="app-icon cursor-pointer flex flex-col items-center">
-            <div class="icon-box w-14 h-14 bg-indigo-600 rounded-2xl flex items-center justify-center text-xl shadow-lg"><i class="fa-solid fa-globe"></i></div>
-            <span class="text-xs mt-2 font-medium">Browser</span>
+    <!-- Desktop Grid Icons -->
+    <div id="desktop">
+        <div class="desktop-icon" onclick="openApp('browserWindow'); event.stopPropagation();">
+            <div class="desktop-icon-img bg-indigo-600"><i class="fa-solid fa-globe"></i></div>
+            <span>Browser</span>
         </div>
-        <div onclick="openApp('filesWindow'); loadFiles(); event.stopPropagation();" class="app-icon cursor-pointer flex flex-col items-center">
-            <div class="icon-box w-14 h-14 bg-amber-500 rounded-2xl flex items-center justify-center text-xl shadow-lg"><i class="fa-solid fa-folder-open"></i></div>
-            <span class="text-xs mt-2 font-medium">Files</span>
+        <div class="desktop-icon" onclick="openApp('filesWindow'); loadFiles(); event.stopPropagation();">
+            <div class="desktop-icon-img bg-amber-500"><i class="fa-solid fa-folder-open"></i></div>
+            <span>Explorer</span>
         </div>
-        <div onclick="openApp('notepadWindow'); event.stopPropagation();" class="app-icon cursor-pointer flex flex-col items-center">
-            <div class="icon-box w-14 h-14 bg-emerald-600 rounded-2xl flex items-center justify-center text-xl shadow-lg"><i class="fa-solid fa-note-sticky"></i></div>
-            <span class="text-xs mt-2 font-medium">Notepad</span>
+        <div class="desktop-icon" onclick="openApp('notepadWindow'); event.stopPropagation();">
+            <div class="desktop-icon-img bg-emerald-600"><i class="fa-solid fa-note-sticky"></i></div>
+            <span>Notepad</span>
         </div>
-        <div onclick="openApp('calcWindow'); event.stopPropagation();" class="app-icon cursor-pointer flex flex-col items-center">
-            <div class="icon-box w-14 h-14 bg-blue-600 rounded-2xl flex items-center justify-center text-xl shadow-lg"><i class="fa-solid fa-calculator"></i></div>
-            <span class="text-xs mt-2 font-medium">Calculator</span>
+        <div class="desktop-icon" onclick="openApp('calcWindow'); event.stopPropagation();">
+            <div class="desktop-icon-img bg-blue-600"><i class="fa-solid fa-calculator"></i></div>
+            <span>Calculator</span>
         </div>
-        <div onclick="openApp('settingsWindow'); event.stopPropagation();" class="app-icon cursor-pointer flex flex-col items-center">
-            <div class="icon-box w-14 h-14 bg-slate-700 rounded-2xl flex items-center justify-center text-xl shadow-lg"><i class="fa-solid fa-gear"></i></div>
-            <span class="text-xs mt-2 font-medium">Settings</span>
+        <div class="desktop-icon" onclick="openApp('terminalWindow'); event.stopPropagation();">
+            <div class="desktop-icon-img bg-neutral-800"><i class="fa-solid fa-terminal"></i></div>
+            <span>Terminal</span>
+        </div>
+        <div class="desktop-icon" onclick="openApp('gameWindow'); initSnake(); event.stopPropagation();">
+            <div class="desktop-icon-img bg-rose-600"><i class="fa-solid fa-gamepad"></i></div>
+            <span>Arcade</span>
+        </div>
+        <div class="desktop-icon" onclick="openApp('settingsWindow'); event.stopPropagation();">
+            <div class="desktop-icon-img bg-cyan-700"><i class="fa-solid fa-gear"></i></div>
+            <span>Settings</span>
         </div>
     </div>
 
-    <!-- Start Menu -->
-    <div id="startMenu" class="hidden absolute bottom-16 left-3 w-80 h-96 rounded-2xl z-50 p-4 bg-slate-900/90 backdrop-blur-xl border border-white/10 flex flex-col shadow-2xl" onclick="event.stopPropagation()">
-        <div class="flex items-center space-x-3 pb-4 border-b border-white/10">
-            <div class="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center text-white font-bold"><i class="fa-solid fa-cubes"></i></div>
-            <div>
-                <h4 class="text-sm font-semibold">WebOS Pro</h4>
-                <p class="text-[10px] text-slate-400">Virtual Workstation</p>
+    <!-- Start Menu (Win 11 Style) -->
+    <div id="startMenu" class="win-mica" onclick="event.stopPropagation()">
+        <!-- Search bar -->
+        <div class="relative mb-6">
+            <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-slate-400 text-sm"></i>
+            <input type="text" placeholder="Type here to search apps, settings, and documents" class="w-full bg-black/30 border border-white/10 rounded-lg pl-10 pr-4 py-2 text-xs text-white placeholder-slate-400 focus:outline-none">
+        </div>
+
+        <!-- Pinned Section -->
+        <div class="mb-6">
+            <div class="flex justify-between items-center mb-3">
+                <span class="text-xs font-semibold text-white">Pinned</span>
+                <span class="text-[10px] text-slate-400 cursor-pointer hover:text-white">All apps ></span>
+            </div>
+            <div class="grid grid-cols-4 gap-4 text-center">
+                <div onclick="openApp('browserWindow'); toggleStartMenu();" class="p-3 hover:bg-white/10 rounded-xl cursor-pointer flex flex-col items-center">
+                    <div class="w-10 h-10 bg-indigo-600 rounded-lg flex items-center justify-center text-white text-lg"><i class="fa-solid fa-globe"></i></div>
+                    <span class="text-[11px] text-slate-200 mt-1.5">Browser</span>
+                </div>
+                <div onclick="openApp('filesWindow'); loadFiles(); toggleStartMenu();" class="p-3 hover:bg-white/10 rounded-xl cursor-pointer flex flex-col items-center">
+                    <div class="w-10 h-10 bg-amber-500 rounded-lg flex items-center justify-center text-white text-lg"><i class="fa-solid fa-folder-open"></i></div>
+                    <span class="text-[11px] text-slate-200 mt-1.5">Explorer</span>
+                </div>
+                <div onclick="openApp('notepadWindow'); toggleStartMenu();" class="p-3 hover:bg-white/10 rounded-xl cursor-pointer flex flex-col items-center">
+                    <div class="w-10 h-10 bg-emerald-600 rounded-lg flex items-center justify-center text-white text-lg"><i class="fa-solid fa-note-sticky"></i></div>
+                    <span class="text-[11px] text-slate-200 mt-1.5">Notepad</span>
+                </div>
+                <div onclick="openApp('calcWindow'); toggleStartMenu();" class="p-3 hover:bg-white/10 rounded-xl cursor-pointer flex flex-col items-center">
+                    <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center text-white text-lg"><i class="fa-solid fa-calculator"></i></div>
+                    <span class="text-[11px] text-slate-200 mt-1.5">Calculator</span>
+                </div>
+                <div onclick="openApp('terminalWindow'); toggleStartMenu();" class="p-3 hover:bg-white/10 rounded-xl cursor-pointer flex flex-col items-center">
+                    <div class="w-10 h-10 bg-neutral-800 rounded-lg flex items-center justify-center text-white text-lg"><i class="fa-solid fa-terminal"></i></div>
+                    <span class="text-[11px] text-slate-200 mt-1.5">Terminal</span>
+                </div>
+                <div onclick="openApp('gameWindow'); initSnake(); toggleStartMenu();" class="p-3 hover:bg-white/10 rounded-xl cursor-pointer flex flex-col items-center">
+                    <div class="w-10 h-10 bg-rose-600 rounded-lg flex items-center justify-center text-white text-lg"><i class="fa-solid fa-gamepad"></i></div>
+                    <span class="text-[11px] text-slate-200 mt-1.5">Arcade</span>
+                </div>
+                <div onclick="openApp('settingsWindow'); toggleStartMenu();" class="p-3 hover:bg-white/10 rounded-xl cursor-pointer flex flex-col items-center">
+                    <div class="w-10 h-10 bg-cyan-700 rounded-lg flex items-center justify-center text-white text-lg"><i class="fa-solid fa-gear"></i></div>
+                    <span class="text-[11px] text-slate-200 mt-1.5">Settings</span>
+                </div>
             </div>
         </div>
-        <div class="flex-1 py-3 grid grid-cols-3 gap-2">
-            <button onclick="openApp('browserWindow'); closeStartMenu();" class="p-2 hover:bg-white/10 rounded-xl flex flex-col items-center"><i class="fa-solid fa-globe text-indigo-400 text-xl"></i><span class="text-xs mt-1">Browser</span></button>
-            <button onclick="openApp('filesWindow'); loadFiles(); closeStartMenu();" class="p-2 hover:bg-white/10 rounded-xl flex flex-col items-center"><i class="fa-solid fa-folder-open text-amber-400 text-xl"></i><span class="text-xs mt-1">Files</span></button>
-            <button onclick="openApp('notepadWindow'); closeStartMenu();" class="p-2 hover:bg-white/10 rounded-xl flex flex-col items-center"><i class="fa-solid fa-note-sticky text-emerald-400 text-xl"></i><span class="text-xs mt-1">Notepad</span></button>
-            <button onclick="openApp('calcWindow'); closeStartMenu();" class="p-2 hover:bg-white/10 rounded-xl flex flex-col items-center"><i class="fa-solid fa-calculator text-blue-400 text-xl"></i><span class="text-xs mt-1">Calc</span></button>
-            <button onclick="openApp('settingsWindow'); closeStartMenu();" class="p-2 hover:bg-white/10 rounded-xl flex flex-col items-center"><i class="fa-solid fa-gear text-slate-300 text-xl"></i><span class="text-xs mt-1">Settings</span></button>
+
+        <!-- Recommended Section -->
+        <div class="flex-1">
+            <span class="text-xs font-semibold text-white mb-3 block">Recommended</span>
+            <div class="grid grid-cols-2 gap-2">
+                <div class="flex items-center space-x-3 p-2 hover:bg-white/10 rounded-lg cursor-pointer" onclick="openApp('notepadWindow'); toggleStartMenu();">
+                    <i class="fa-solid fa-file-lines text-emerald-400 text-lg"></i>
+                    <div>
+                        <div class="text-xs text-white font-medium">Welcome.txt</div>
+                        <div class="text-[10px] text-slate-400">Recently edited</div>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-3 p-2 hover:bg-white/10 rounded-lg cursor-pointer" onclick="openApp('browserWindow'); toggleStartMenu();">
+                    <i class="fa-solid fa-globe text-indigo-400 text-lg"></i>
+                    <div>
+                        <div class="text-xs text-white font-medium">WebOS Browser</div>
+                        <div class="text-[10px] text-slate-400">Ready to proxy</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer profile -->
+        <div class="pt-4 border-t border-white/10 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <div class="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center text-white font-bold text-xs">U</div>
+                <span class="text-xs font-medium text-white">Administrator</span>
+            </div>
+            <button onclick="location.reload()" class="w-8 h-8 hover:bg-white/10 rounded-lg flex items-center justify-center text-slate-300 hover:text-white" title="Restart WebOS"><i class="fa-solid fa-power-off text-xs"></i></button>
         </div>
     </div>
+
+    <!-- ================= APPS / WINDOWS ================= -->
 
     <!-- BROWSER WINDOW -->
-    <div id="browserWindow" class="window hidden absolute top-10 left-12 w-[850px] h-[520px] bg-slate-900/90 backdrop-blur-xl rounded-xl flex flex-col overflow-hidden shadow-2xl z-10 border border-white/10" onclick="event.stopPropagation()">
-        <div class="h-10 bg-slate-900/80 border-b border-white/10 flex items-center justify-between px-4 select-none cursor-move" onmousedown="startDrag(event, 'browserWindow')">
-            <div class="flex items-center space-x-2">
-                <div onclick="closeApp('browserWindow')" class="w-3 h-3 rounded-full bg-rose-500 cursor-pointer"></div>
-                <div onclick="toggleFullscreen('browserWindow')" class="w-3 h-3 rounded-full bg-emerald-500 cursor-pointer"></div>
-                <span class="text-xs font-semibold text-slate-300 ml-2">Web Browser</span>
+    <div id="browserWindow" class="win-window win-mica hidden" onclick="event.stopPropagation()">
+        <div class="win-titlebar" onmousedown="startDrag(event, 'browserWindow')">
+            <div class="win-titlebar-title">
+                <i class="fa-solid fa-globe text-indigo-400"></i> Edge Browser
+            </div>
+            <div class="win-controls">
+                <button class="win-btn" onclick="minimizeApp('browserWindow')"><i class="fa-solid fa-minus text-xs"></i></button>
+                <button class="win-btn" onclick="toggleMaximize('browserWindow')"><i class="fa-regular fa-square text-xs"></i></button>
+                <button class="win-btn win-btn-close" onclick="closeApp('browserWindow')"><i class="fa-solid fa-xmark text-xs"></i></button>
             </div>
         </div>
-        <div class="bg-slate-900/50 p-2 border-b border-white/10 flex items-center space-x-2">
+        <div class="bg-black/40 p-2 border-b border-white/10 flex items-center space-x-2">
+            <button onclick="document.getElementById('browserFrame').contentWindow.history.back()" class="w-7 h-7 hover:bg-white/10 rounded flex items-center justify-center text-slate-300"><i class="fa-solid fa-arrow-left text-xs"></i></button>
+            <button onclick="document.getElementById('browserFrame').contentWindow.history.forward()" class="w-7 h-7 hover:bg-white/10 rounded flex items-center justify-center text-slate-300"><i class="fa-solid fa-arrow-right text-xs"></i></button>
+            <button onclick="document.getElementById('browserFrame').contentWindow.location.reload()" class="w-7 h-7 hover:bg-white/10 rounded flex items-center justify-center text-slate-300"><i class="fa-solid fa-rotate-right text-xs"></i></button>
             <form onsubmit="loadUrl(event)" class="flex-1 flex">
-                <input id="urlInput" type="text" placeholder="Search or enter URL (e.g. https://crazygames.com)" class="w-full bg-slate-950 border border-white/10 rounded-lg px-4 py-1.5 text-sm text-white focus:outline-none">
+                <input id="urlInput" type="text" placeholder="Search or enter web address (e.g. https://google.com)" class="w-full bg-black/40 border border-white/10 rounded-full px-4 py-1 text-xs text-white focus:outline-none">
             </form>
-            <button onclick="loadUrlBtn()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-1.5 rounded-lg text-sm">Go</button>
+            <button onclick="loadUrlBtn()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-3.5 py-1 rounded-full text-xs font-medium">Go</button>
         </div>
         <iframe id="browserFrame" src="about:blank" class="w-full flex-1 border-none bg-white"></iframe>
     </div>
 
-    <!-- FILES WINDOW -->
-    <div id="filesWindow" class="window hidden absolute top-16 left-24 w-[650px] h-[400px] bg-slate-900/90 backdrop-blur-xl rounded-xl flex flex-col overflow-hidden shadow-2xl z-10 border border-white/10" onclick="event.stopPropagation()">
-        <div class="h-10 bg-slate-900/80 border-b border-white/10 flex items-center justify-between px-4 select-none cursor-move" onmousedown="startDrag(event, 'filesWindow')">
-            <div class="flex items-center space-x-2">
-                <div onclick="closeApp('filesWindow')" class="w-3 h-3 rounded-full bg-rose-500 cursor-pointer"></div>
-                <span class="text-xs font-semibold text-slate-300 ml-2">File Manager</span>
+    <!-- FILE EXPLORER WINDOW -->
+    <div id="filesWindow" class="win-window win-mica hidden" onclick="event.stopPropagation()">
+        <div class="win-titlebar" onmousedown="startDrag(event, 'filesWindow')">
+            <div class="win-titlebar-title">
+                <i class="fa-solid fa-folder-open text-amber-400"></i> File Explorer
             </div>
-            <button onclick="createNewFilePrompt()" class="bg-amber-600 hover:bg-amber-500 text-white px-2.5 py-1 rounded text-xs">New File</button>
+            <div class="win-controls">
+                <button class="win-btn" onclick="minimizeApp('filesWindow')"><i class="fa-solid fa-minus text-xs"></i></button>
+                <button class="win-btn" onclick="toggleMaximize('filesWindow')"><i class="fa-regular fa-square text-xs"></i></button>
+                <button class="win-btn win-btn-close" onclick="closeApp('filesWindow')"><i class="fa-solid fa-xmark text-xs"></i></button>
+            </div>
         </div>
-        <div id="fileGrid" class="flex-1 p-6 grid grid-cols-4 gap-4 overflow-y-auto"></div>
+        <div class="bg-black/20 p-3 border-b border-white/10 flex justify-between items-center">
+            <div class="text-xs text-slate-300 font-medium">This PC > Documents</div>
+            <button onclick="createNewFilePrompt()" class="bg-amber-600 hover:bg-amber-500 text-white px-3 py-1 rounded text-xs font-medium"><i class="fa-solid fa-plus mr-1"></i> New File</button>
+        </div>
+        <div id="fileGrid" class="flex-1 p-6 grid grid-cols-4 gap-4 overflow-y-auto bg-black/10"></div>
     </div>
 
     <!-- NOTEPAD WINDOW -->
-    <div id="notepadWindow" class="window hidden absolute top-20 left-36 w-[550px] h-[360px] bg-slate-900/90 backdrop-blur-xl rounded-xl flex flex-col overflow-hidden shadow-2xl z-10 border border-white/10" onclick="event.stopPropagation()">
-        <div class="h-10 bg-slate-900/80 border-b border-white/10 flex items-center justify-between px-4 select-none cursor-move" onmousedown="startDrag(event, 'notepadWindow')">
-            <div class="flex items-center space-x-2">
-                <div onclick="closeApp('notepadWindow')" class="w-3 h-3 rounded-full bg-rose-500 cursor-pointer"></div>
-                <span class="text-xs font-semibold text-slate-300 ml-2">Notepad</span>
+    <div id="notepadWindow" class="win-window win-mica hidden" onclick="event.stopPropagation()">
+        <div class="win-titlebar" onmousedown="startDrag(event, 'notepadWindow')">
+            <div class="win-titlebar-title">
+                <i class="fa-solid fa-note-sticky text-emerald-400"></i> Notepad
             </div>
-            <button onclick="saveCurrentNote()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-2.5 py-1 rounded text-xs">Save</button>
+            <div class="win-controls">
+                <button class="win-btn" onclick="minimizeApp('notepadWindow')"><i class="fa-solid fa-minus text-xs"></i></button>
+                <button class="win-btn" onclick="toggleMaximize('notepadWindow')"><i class="fa-regular fa-square text-xs"></i></button>
+                <button class="win-btn win-btn-close" onclick="closeApp('notepadWindow')"><i class="fa-solid fa-xmark text-xs"></i></button>
+            </div>
         </div>
-        <textarea id="notepadContent" class="flex-1 bg-slate-950/60 p-4 text-sm text-slate-200 resize-none border-none focus:outline-none font-mono" placeholder="Write something..."></textarea>
+        <div class="bg-black/20 p-2 border-b border-white/10 flex justify-between items-center text-xs text-slate-300">
+            <div class="flex space-x-3 px-2">
+                <span class="cursor-pointer hover:text-white" onclick="saveCurrentNote()">File (Save)</span>
+                <span class="cursor-pointer hover:text-white" onclick="downloadNote()">Download</span>
+            </div>
+            <span id="noteStatus" class="text-[10px] text-emerald-400 pr-2">Saved</span>
+        </div>
+        <textarea id="notepadContent" class="flex-1 bg-black/40 p-4 text-xs text-slate-200 resize-none border-none focus:outline-none font-mono" placeholder="Type your notes here..."></textarea>
     </div>
 
     <!-- CALCULATOR WINDOW -->
-    <div id="calcWindow" class="window hidden absolute top-24 left-44 w-[300px] h-[380px] bg-slate-900/90 backdrop-blur-xl rounded-xl flex flex-col overflow-hidden shadow-2xl z-10 border border-white/10" onclick="event.stopPropagation()">
-        <div class="h-10 bg-slate-900/80 border-b border-white/10 flex items-center justify-between px-4 select-none cursor-move" onmousedown="startDrag(event, 'calcWindow')">
-            <div class="flex items-center space-x-2">
-                <div onclick="closeApp('calcWindow')" class="w-3 h-3 rounded-full bg-rose-500 cursor-pointer"></div>
-                <span class="text-xs font-semibold text-slate-300 ml-2">Calculator</span>
+    <div id="calcWindow" class="win-window win-mica hidden" style="width: 320px; height: 440px;" onclick="event.stopPropagation()">
+        <div class="win-titlebar" onmousedown="startDrag(event, 'calcWindow')">
+            <div class="win-titlebar-title">
+                <i class="fa-solid fa-calculator text-blue-400"></i> Calculator
+            </div>
+            <div class="win-controls">
+                <button class="win-btn" onclick="minimizeApp('calcWindow')"><i class="fa-solid fa-minus text-xs"></i></button>
+                <button class="win-btn win-btn-close" onclick="closeApp('calcWindow')"><i class="fa-solid fa-xmark text-xs"></i></button>
             </div>
         </div>
-        <div class="p-4 flex flex-col flex-1 bg-slate-950/40">
-            <div id="calcDisplay" class="bg-slate-900 text-right text-2xl font-bold p-3 rounded-xl mb-3 text-white">0</div>
+        <div class="p-4 flex flex-col flex-1 bg-black/30">
+            <div id="calcDisplay" class="bg-black/50 text-right text-3xl font-bold p-4 rounded-xl mb-3 text-white border border-white/10">0</div>
             <div class="grid grid-cols-4 gap-2 flex-1">
-                <button onclick="calcClear()" class="bg-rose-600 rounded text-white font-bold">C</button>
-                <button onclick="calcAppend('/')" class="bg-slate-800 rounded text-white font-bold">/</button>
-                <button onclick="calcAppend('*')" class="bg-slate-800 rounded text-white font-bold">×</button>
-                <button onclick="calcAppend('-')" class="bg-slate-800 rounded text-white font-bold">-</button>
-                <button onclick="calcAppend('7')" class="bg-slate-700 rounded text-white font-bold">7</button>
-                <button onclick="calcAppend('8')" class="bg-slate-700 rounded text-white font-bold">8</button>
-                <button onclick="calcAppend('9')" class="bg-slate-700 rounded text-white font-bold">9</button>
-                <button onclick="calcAppend('+')" class="bg-slate-800 rounded text-white font-bold row-span-2">+</button>
-                <button onclick="calcAppend('4')" class="bg-slate-700 rounded text-white font-bold">4</button>
-                <button onclick="calcAppend('5')" class="bg-slate-700 rounded text-white font-bold">5</button>
-                <button onclick="calcAppend('6')" class="bg-slate-700 rounded text-white font-bold">6</button>
-                <button onclick="calcAppend('1')" class="bg-slate-700 rounded text-white font-bold">1</button>
-                <button onclick="calcAppend('2')" class="bg-slate-700 rounded text-white font-bold">2</button>
-                <button onclick="calcAppend('3')" class="bg-slate-700 rounded text-white font-bold">3</button>
-                <button onclick="calcCompute()" class="bg-blue-600 rounded text-white font-bold row-span-2">=</button>
-                <button onclick="calcAppend('0')" class="bg-slate-700 rounded text-white font-bold col-span-2">0</button>
-                <button onclick="calcAppend('.')" class="bg-slate-700 rounded text-white font-bold">.</button>
+                <button onclick="calcClear()" class="bg-rose-600/80 hover:bg-rose-600 rounded-lg text-white font-semibold">C</button>
+                <button onclick="calcAppend('/')" class="bg-white/10 hover:bg-white/20 rounded-lg text-white font-semibold">/</button>
+                <button onclick="calcAppend('*')" class="bg-white/10 hover:bg-white/20 rounded-lg text-white font-semibold">×</button>
+                <button onclick="calcAppend('-')" class="bg-white/10 hover:bg-white/20 rounded-lg text-white font-semibold">-</button>
+                <button onclick="calcAppend('7')" class="bg-white/5 hover:bg-white/15 rounded-lg text-white font-semibold">7</button>
+                <button onclick="calcAppend('8')" class="bg-white/5 hover:bg-white/15 rounded-lg text-white font-semibold">8</button>
+                <button onclick="calcAppend('9')" class="bg-white/5 hover:bg-white/15 rounded-lg text-white font-semibold">9</button>
+                <button onclick="calcAppend('+')" class="bg-white/10 hover:bg-white/20 rounded-lg text-white font-semibold row-span-2">+</button>
+                <button onclick="calcAppend('4')" class="bg-white/5 hover:bg-white/15 rounded-lg text-white font-semibold">4</button>
+                <button onclick="calcAppend('5')" class="bg-white/5 hover:bg-white/15 rounded-lg text-white font-semibold">5</button>
+                <button onclick="calcAppend('6')" class="bg-white/5 hover:bg-white/15 rounded-lg text-white font-semibold">6</button>
+                <button onclick="calcAppend('1')" class="bg-white/5 hover:bg-white/15 rounded-lg text-white font-semibold">1</button>
+                <button onclick="calcAppend('2')" class="bg-white/5 hover:bg-white/15 rounded-lg text-white font-semibold">2</button>
+                <button onclick="calcAppend('3')" class="bg-white/5 hover:bg-white/15 rounded-lg text-white font-semibold">3</button>
+                <button onclick="calcCompute()" class="bg-blue-600 hover:bg-blue-500 rounded-lg text-white font-semibold row-span-2">=</button>
+                <button onclick="calcAppend('0')" class="bg-white/5 hover:bg-white/15 rounded-lg text-white font-semibold col-span-2">0</button>
+                <button onclick="calcAppend('.')" class="bg-white/5 hover:bg-white/15 rounded-lg text-white font-semibold">.</button>
             </div>
+        </div>
+    </div>
+
+    <!-- TERMINAL WINDOW -->
+    <div id="terminalWindow" class="win-window win-mica hidden" style="width: 700px; height: 420px;" onclick="event.stopPropagation()">
+        <div class="win-titlebar" onmousedown="startDrag(event, 'terminalWindow')">
+            <div class="win-titlebar-title">
+                <i class="fa-solid fa-terminal text-neutral-300"></i> Command Prompt
+            </div>
+            <div class="win-controls">
+                <button class="win-btn" onclick="minimizeApp('terminalWindow')"><i class="fa-solid fa-minus text-xs"></i></button>
+                <button class="win-btn" onclick="toggleMaximize('terminalWindow')"><i class="fa-regular fa-square text-xs"></i></button>
+                <button class="win-btn win-btn-close" onclick="closeApp('terminalWindow')"><i class="fa-solid fa-xmark text-xs"></i></button>
+            </div>
+        </div>
+        <div id="termBody" class="flex-1 bg-black/90 p-4 font-mono text-xs text-green-400 overflow-y-auto flex flex-col">
+            <div class="mb-2 text-slate-300">Microsoft Windows [Version 11.2600.888]<br>(c) Microsoft Corporation. All rights reserved.</div>
+            <div id="termOutput" class="flex-1 space-y-1"></div>
+            <div class="flex items-center mt-2">
+                <span class="text-green-500 mr-2">C:\WebOS></span>
+                <input id="termInput" type="text" autofocus onkeypress="handleTerminal(event)" class="flex-1 bg-transparent border-none text-green-400 focus:outline-none font-mono text-xs">
+            </div>
+        </div>
+    </div>
+
+    <!-- ARCADE / SNAKE GAME WINDOW -->
+    <div id="gameWindow" class="win-window win-mica hidden" style="width: 440px; height: 480px;" onclick="event.stopPropagation()">
+        <div class="win-titlebar" onmousedown="startDrag(event, 'gameWindow')">
+            <div class="win-titlebar-title">
+                <i class="fa-solid fa-gamepad text-rose-500"></i> Retro Snake Arcade
+            </div>
+            <div class="win-controls">
+                <button class="win-btn" onclick="minimizeApp('gameWindow')"><i class="fa-solid fa-minus text-xs"></i></button>
+                <button class="win-btn win-btn-close" onclick="closeApp('gameWindow')"><i class="fa-solid fa-xmark text-xs"></i></button>
+            </div>
+        </div>
+        <div class="flex-1 bg-neutral-950 p-4 flex flex-col items-center justify-center">
+            <div class="flex justify-between w-full mb-3 px-2 text-xs text-white font-mono">
+                <span>Score: <strong id="snakeScore" class="text-rose-400">0</strong></span>
+                <span class="text-slate-400">Use Arrow Keys to Play</span>
+            </div>
+            <canvas id="snakeCanvas" width="380" height="340" class="bg-neutral-900 border border-white/10 rounded-lg shadow-inner"></canvas>
         </div>
     </div>
 
     <!-- SETTINGS WINDOW -->
-   <!-- SETTINGS WINDOW -->
-    <div id="settingsWindow" class="window hidden absolute top-12 left-60 w-[550px] h-[380px] bg-slate-900/90 backdrop-blur-xl rounded-xl flex flex-col overflow-hidden shadow-2xl z-10 border border-white/10" onclick="event.stopPropagation()">
-        <div class="h-10 bg-slate-900/80 border-b border-white/10 flex items-center justify-between px-4 select-none cursor-move" onmousedown="startDrag(event, 'settingsWindow')">
-            <div class="flex items-center space-x-2">
-                <div onclick="closeApp('settingsWindow')" class="w-3 h-3 rounded-full bg-rose-500 cursor-pointer"></div>
-                <span class="text-xs font-semibold text-slate-300 ml-2">Settings</span>
+    <div id="settingsWindow" class="win-window win-mica hidden" style="width: 720px; height: 460px;" onclick="event.stopPropagation()">
+        <div class="win-titlebar" onmousedown="startDrag(event, 'settingsWindow')">
+            <div class="win-titlebar-title">
+                <i class="fa-solid fa-gear text-cyan-400"></i> Settings - Personalization
+            </div>
+            <div class="win-controls">
+                <button class="win-btn" onclick="minimizeApp('settingsWindow')"><i class="fa-solid fa-minus text-xs"></i></button>
+                <button class="win-btn" onclick="toggleMaximize('settingsWindow')"><i class="fa-regular fa-square text-xs"></i></button>
+                <button class="win-btn win-btn-close" onclick="closeApp('settingsWindow')"><i class="fa-solid fa-xmark text-xs"></i></button>
             </div>
         </div>
-        <div class="p-6 space-y-4">
-            <h3 class="text-sm font-semibold">Change Wallpaper</h3>
-            <div class="grid grid-cols-3 gap-3">
-                <!-- Wallpaper 1 (Replace with your GitHub Raw URL) -->
-                <div onclick="setWallpaper('https://raw.githubusercontent.com/Txandy10/test/main/wallpaper1.webp')" class="h-20 rounded-lg bg-cover bg-center cursor-pointer border border-indigo-500" style="background-image: url('https://raw.githubusercontent.com/YOUR-USERNAME/YOUR-REPO/main/wallpaper1.jpg')"></div>
-                
-                <!-- Wallpaper 2 (Replace with your GitHub Raw URL) -->
-                <div onclick="setWallpaper('https://raw.githubusercontent.com/Txandy10/test/main/wallpaper2.webp')" class="h-20 rounded-lg bg-cover bg-center cursor-pointer border border-white/20" style="background-image: url('https://raw.githubusercontent.com/YOUR-USERNAME/YOUR-REPO/main/wallpaper2.jpg')"></div>
-                
-                <!-- Wallpaper 3 (Replace with your GitHub Raw URL) -->
-                <div onclick="setWallpaper('https://raw.githubusercontent.com/Txandy10/test/main/wallpaper3.webp')" class="h-20 rounded-lg bg-cover bg-center cursor-pointer border border-white/20" style="background-image: url('https://raw.githubusercontent.com/YOUR-USERNAME/YOUR-REPO/main/wallpaper3.jpg')"></div>
+        <div class="flex flex-1 overflow-hidden">
+            <div class="w-48 bg-black/30 border-r border-white/10 p-3 space-y-1">
+                <div class="px-3 py-2 bg-white/10 text-white text-xs font-medium rounded-lg cursor-pointer flex items-center space-x-2"><i class="fa-solid fa-image"></i><span>Background</span></div>
+                <div class="px-3 py-2 hover:bg-white/5 text-slate-300 hover:text-white text-xs font-medium rounded-lg cursor-pointer flex items-center space-x-2"><i class="fa-solid fa-circle-info"></i><span>System Info</span></div>
+            </div>
+            <div class="flex-1 p-6 overflow-y-auto space-y-4">
+                <h3 class="text-sm font-semibold text-white">Choose your desktop background</h3>
+                <div class="grid grid-cols-3 gap-4">
+                    <div onclick="setWallpaper('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2000&auto=format&fit=crop')" class="h-24 rounded-xl bg-cover bg-center cursor-pointer border-2 border-cyan-500 shadow-md hover:scale-105 transition-transform" style="background-image: url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=400&auto=format&fit=crop')"></div>
+                    <div onclick="setWallpaper('https://images.unsplash.com/photo-1579546929518-9e396f3cc809?q=80&w=2000&auto=format&fit=crop')" class="h-24 rounded-xl bg-cover bg-center cursor-pointer border-2 border-transparent shadow-md hover:scale-105 transition-transform" style="background-image: url('https://images.unsplash.com/photo-1579546929518-9e396f3cc809?q=80&w=400&auto=format&fit=crop')"></div>
+                    <div onclick="setWallpaper('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=2000&auto=format&fit=crop')" class="h-24 rounded-xl bg-cover bg-center cursor-pointer border-2 border-transparent shadow-md hover:scale-105 transition-transform" style="background-image: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=400&auto=format&fit=crop')"></div>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Taskbar -->
-    <div class="h-14 bg-slate-900/80 backdrop-blur-xl border-t border-white/10 flex items-center justify-between px-4 z-50">
-        <button onclick="toggleStartMenu(event)" class="w-10 h-10 bg-indigo-600 hover:bg-indigo-500 rounded-xl flex items-center justify-center text-white transition-colors"><i class="fa-solid fa-cubes"></i></button>
-        <div id="clock" class="text-xs font-medium bg-white/5 px-3 py-1.5 rounded-lg border border-white/5 text-slate-300"></div>
+    <!-- ================= WINDOWS 11 TASKBAR ================= -->
+    <div id="taskbar" onclick="event.stopPropagation()">
+        <!-- Left Tray / Widgets -->
+        <div class="flex items-center space-x-3 pl-2">
+            <div class="flex items-center space-x-1.5 text-xs text-white font-medium">
+                <i class="fa-solid fa-cloud-sun text-cyan-400"></i>
+                <span>72°F Partly Cloudy</span>
+            </div>
+        </div>
+
+        <!-- Centered Taskbar App Icons -->
+        <div class="taskbar-center">
+            <div class="taskbar-icon" onclick="toggleStartMenu(event)" title="Start Menu"><i class="fa-solid fa-cubes text-cyan-400"></i></div>
+            <div class="taskbar-icon" id="tb-browserWindow" onclick="toggleAppWindow('browserWindow')" title="Edge Browser"><i class="fa-solid fa-globe text-indigo-400"></i></div>
+            <div class="taskbar-icon" id="tb-filesWindow" onclick="toggleAppWindow('filesWindow'); loadFiles();" title="File Explorer"><i class="fa-solid fa-folder-open text-amber-400"></i></div>
+            <div class="taskbar-icon" id="tb-notepadWindow" onclick="toggleAppWindow('notepadWindow')" title="Notepad"><i class="fa-solid fa-note-sticky text-emerald-400"></i></div>
+            <div class="taskbar-icon" id="tb-calcWindow" onclick="toggleAppWindow('calcWindow')" title="Calculator"><i class="fa-solid fa-calculator text-blue-400"></i></div>
+            <div class="taskbar-icon" id="tb-terminalWindow" onclick="toggleAppWindow('terminalWindow')" title="Terminal"><i class="fa-solid fa-terminal text-neutral-300"></i></div>
+            <div class="taskbar-icon" id="tb-gameWindow" onclick="toggleAppWindow('gameWindow'); initSnake();" title="Arcade"><i class="fa-solid fa-gamepad text-rose-500"></i></div>
+            <div class="taskbar-icon" id="tb-settingsWindow" onclick="toggleAppWindow('settingsWindow')" title="Settings"><i class="fa-solid fa-gear text-cyan-400"></i></div>
+        </div>
+
+        <!-- Right System Tray -->
+        <div class="taskbar-right">
+            <div class="tray-icon"><i class="fa-solid fa-chevron-up text-[10px]"></i></div>
+            <div class="tray-icon"><i class="fa-solid fa-wifi"></i></div>
+            <div class="tray-icon"><i class="fa-solid fa-volume-high"></i></div>
+            <div class="tray-icon"><i class="fa-solid fa-battery-full"></i></div>
+            <div class="tray-icon flex flex-col items-end leading-tight pr-1">
+                <span id="taskbarTime" class="font-medium">12:00 PM</span>
+                <span id="taskbarDate" class="text-[10px] text-slate-400">10/24/2026</span>
+            </div>
+            <div class="w-1 h-full border-l border-white/20 ml-1"></div>
+        </div>
     </div>
 
     <!-- Main Desktop Script -->
