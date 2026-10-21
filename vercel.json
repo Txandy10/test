@@ -1,14 +1,6 @@
 {
   "rewrites": [
     {
-      "source": "/api/proxy",
-      "destination": "/api/proxy"
-    }
-  ]
-}
-{
-  "rewrites": [
-    {
       "source": "/proxy/:path*",
       "destination": "https://test.txandyspam.workers.dev/:path*"
     }
