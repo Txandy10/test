@@ -3,6 +3,10 @@
     {
       "source": "/proxy/:path*",
       "destination": "https://test.txandyspam.workers.dev/:path*"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
   ]
 }
